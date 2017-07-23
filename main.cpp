@@ -205,6 +205,11 @@ int main(int argc, const char** argv)
       sigaddset(&set, SIGINT);
       sigaddset(&set, SIGTERM);
       if (pthread_sigmask(SIG_BLOCK, &set, NULL) == 0) {
+        if ((nworkers > ndests) &&
+            (type == net::udp_distributor::type::load_balancer)) {
+          nworkers = ndests;
+        }
+
         // Create UDP distributor.
         net::udp_distributor udp_distributor;
         if (udp_distributor.create(type,
